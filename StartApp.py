@@ -10,10 +10,13 @@ import sys
 import os
 import time
 
+cwd=os.getcwd()
+print (cwd)
+
 root = Tk()
 
 #creating image var
-image = PhotoImage(file='images/firstScreen.png')
+image = PhotoImage(file='./images/firstScreen.png')
 #size of the window in pixels
 height = 450
 width = 600
