@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec 27 10:00:19 2022
-
-
-@author: Azmi Deliaslan
-"""
 from database import Database
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, NamedStyle
@@ -67,15 +60,12 @@ def calc_profit():
         row_index = row_index + 1
         cell.alignment = Alignment(horizontal="center")
 
-    # Adding Conditional Formatting on entire row
     yellow_background = PatternFill(bgColor="e9ee9e")
     diff_style = DifferentialStyle(fill=yellow_background)
     rule = Rule(type="expression", dxf=diff_style)
     rule.formula = ["$H1<0"]
     sheet.conditional_formatting.add(f"A1:H{sheet.max_column}", rule)
 
-    # Same formula as but for a cell in a column
-    # sheet.conditional_formatting.add(f'H2:H{sheet.max_column}', CellIsRule(operator='lessThan', formula=['0'], fill=yellow_background))
     wb.save("product_list.xlsx")
 
 

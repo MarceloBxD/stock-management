@@ -4,25 +4,21 @@ import sys
 import os
 import time
 
-# mainpath = os.path.abspath("./images/firstScreen.png")
 root = Tk()
 
-#creating image var
-# image = PhotoImage(file=mainpath)
-#size of the window in pixels
 height = 450
 width = 600
-#The x and y variables are used to calculate the position of the window on the screen, so that it is centered horizontally and vertically.
+
 x = (root.winfo_screenwidth()//2)-(width//2)
 y = (root.winfo_screenheight()//2)-(height//2)
-#get the dimensions of the screen, in pixels. The window is then positioned in the center of the screen by dividing these dimensions by 2 and subtracting half the width and height of the window.
+
 root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
-#remove the window frame and title bar from the root window. This makes the window appear as a floating window without any borders or decorations.
+
 root.overrideredirect(1)
-#The '-topmost' attribute is a Tkinter attribute that can be used to control the stacking order of windows.
+
 root.wm_attributes('-topmost', True)
 root.config(background='#ffffff')
-#background image
+
 bg_label = Label(root, bg='black')
 bg_label.place(x=0, y=0)
 

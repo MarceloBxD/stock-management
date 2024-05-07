@@ -47,8 +47,6 @@ if __name__ == '__main__':
             pass
 
 
-    # Create main window with using themed_tk
-    # provides themed widgets and window styles for Tkinter
     root = themed_tk.ThemedTk()
     root.set_theme("scidpurple")
 
@@ -57,12 +55,12 @@ if __name__ == '__main__':
     height = 700
     x = (root.winfo_screenwidth() // 2) - (width // 2)
     y = (root.winfo_screenheight() // 2) - (height // 2)
-    # get the dimensions of the screen, in pixels. The window is then positioned in the center of the screen by dividing these dimensions by 2 and subtracting half the width and height of the window.
+
     root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     root.columnconfigure(0, weight=1)
     im = Image.open("images//icon.png")
     icon = ImageTk.PhotoImage(im)
-    # Set the window icon using the PhotoImage object
+
     root.wm_iconphoto(True, icon)
 
     entry_frame = LabelFrame(root, text="Entrar com Detalhes do Produto")
