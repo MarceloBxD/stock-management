@@ -1,22 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec 27 04:23:11 2022
-@author: Azmi Deliaslan
-"""
-#First Screen
 from tkinter import *
 from tkinter.ttk import Progressbar
 import sys
 import os
 import time
 
-cwd=os.getcwd()
-print (cwd)
-
+# mainpath = os.path.abspath("./images/firstScreen.png")
 root = Tk()
 
 #creating image var
-image = PhotoImage(file='./images/firstScreen.png')
+# image = PhotoImage(file=mainpath)
 #size of the window in pixels
 height = 450
 width = 600
@@ -31,7 +23,7 @@ root.overrideredirect(1)
 root.wm_attributes('-topmost', True)
 root.config(background='#ffffff')
 #background image
-bg_label = Label(root, image=image)
+bg_label = Label(root, bg='black')
 bg_label.place(x=0, y=0)
 
 welcome_label = Label(text='Nome da Empresa - Controle de Estoque', bg='black', font=("arial", 15, "bold"), fg='white')

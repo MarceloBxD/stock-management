@@ -5,9 +5,7 @@ a = Analysis(
     ['StartApp.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('./images/firstScreen.png', 'images')
-    ],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
