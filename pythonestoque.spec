@@ -5,7 +5,9 @@ a = Analysis(
     ['StartApp.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[
+        ('/convertToExcel.py', '.')
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

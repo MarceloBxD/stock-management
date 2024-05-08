@@ -104,8 +104,6 @@ if __name__ == '__main__':
     selling_price_entry = Entry(entry_frame, textvariable=selling_price_var)
     selling_price_entry.grid(row=2, column=1)
 
-    # ****************************************** #
-
     # Product List
     # frame containing product listing and scrollbar
     listing_frame = Frame(root, borderwidth=1, relief="raised")
