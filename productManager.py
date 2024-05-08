@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Dec 27 05:40:02 2022
-@author: Azmi Deliaslan
-"""
 import tkinter as tk
 from tkinter import messagebox
 from tkinter.ttk import LabelFrame, Label, Button, Entry, Frame, Scrollbar, Style
@@ -25,11 +20,9 @@ if __name__ == '__main__':
             string = str(num + 1) + string
             product_list_listbox.insert(tk.END, string)
 
-    # Function to bind listbox
     def select_item(event):
         try:
             global selected_item
-            # Use the curselection technique to question the selection. A list of item indexes is returned
             index = product_list_listbox.curselection()[0]
             selected_item = product_list_listbox.get(index)
             selected_item = selected_item.split("  |  ")
@@ -58,8 +51,6 @@ if __name__ == '__main__':
 
     root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     root.columnconfigure(0, weight=1)
-    im = Image.open("images//icon.png")
-    icon = ImageTk.PhotoImage(im)
 
     root.wm_iconphoto(True, icon)
 
