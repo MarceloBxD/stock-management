@@ -14,15 +14,6 @@ class Database:
         """)
         self.conn.commit()
 
-        # Creating a table for users
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS
-        users (
-            "user_id"	INTEGER UNIQUE NOT NULL,
-            "user_name"	TEXT NOT NULL,
-            "user_password"	TEXT NOT NULL,
-	        PRIMARY KEY("user_id" AUTOINCREMENT)
-        );
-        """)
 
     def fetch_all_rows(self):
         self.cur.execute(

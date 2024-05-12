@@ -2,12 +2,10 @@
 
 
 a = Analysis(
-    ['StartApp.py'],
+    ['productManager.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('/convertToExcel.py', '.')
-    ],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
