@@ -7,22 +7,22 @@ class Database:
         self.cur.execute("""CREATE TABLE IF NOT EXISTS
         products (
             "product_id"	INTEGER UNIQUE NOT NULL,
-            "product_name"	TEXT NOT NULL,
+            "product_name"	TEXT UNIQUE NOT NULL ,
             "product_stock"	INTEGER NOT NULL,
 	        PRIMARY KEY("product_id" AUTOINCREMENT)
         );
         """)
         self.conn.commit()
 
-# Creating a table for users
-        # self.cur.execute("""CREATE TABLE IF NOT EXISTS
-        # users (
-        #     "user_id"	INTEGER UNIQUE NOT NULL,
-        #     "user_name"	TEXT NOT NULL,
-        #     "user_password"	TEXT NOT NULL,
-	    #     PRIMARY KEY("user_id" AUTOINCREMENT)
-        # );
-        # """)
+        # Creating a table for users
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS
+        users (
+            "user_id"	INTEGER UNIQUE NOT NULL,
+            "user_name"	TEXT NOT NULL,
+            "user_password"	TEXT NOT NULL,
+	        PRIMARY KEY("user_id" AUTOINCREMENT)
+        );
+        """)
 
     def fetch_all_rows(self):
         self.cur.execute(
