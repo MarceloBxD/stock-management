@@ -10,16 +10,12 @@ def convert():
     # Get workbook active sheet
     sheet = wb.active
     # Creating Headings
-    sheet.cell(row=1, column=1).value = "ID do Produto"
-    sheet.cell(row=1, column=2).value = "Categoria do Produto"
-    sheet.cell(row=1, column=3).value = "Marca do Produto"
-    sheet.cell(row=1, column=4).value = "Nome do Produto"
-    sheet.cell(row=1, column=5).value = "Quantidade em Estoque"
-    sheet.cell(row=1, column=6).value = "Preço de Compra"
-    sheet.cell(row=1, column=7).value = "Preço de Venda"
+    sheet.cell(row=1, column=1).value = "CR do Produto"
+    sheet.cell(row=1, column=2).value = "Nome do Produto"
+    sheet.cell(row=1, column=3).value = "Quantidade em Estoque"
 
     # Styling Headings
-    for i in range(1, 8):
+    for i in range(1, 5):
         sheet.cell(row=1, column=i).font = Font(bold=True, name="arial", size=15)
         sheet.cell(row=1, column=i).fill = PatternFill(patternType="solid", fgColor="00e5ee")
         sheet.cell(row=1, column=i).alignment = Alignment(horizontal="center")
@@ -41,30 +37,10 @@ def convert():
     wb.save("product_list.xlsx")
 
 
-def calc_profit():
     # loading excel file to read and write to
     wb = openpyxl.load_workbook(filename="product_list.xlsx")
 
     sheet = wb.active
-
-    # Creating  and styling Profit Column Heading
-    sheet.cell(row=1, column=8).value = "Lucro"
-    sheet.cell(row=1, column=8).font = Font(bold=True, name="arial", size=15)
-    sheet.cell(row=1, column=8).fill = PatternFill(patternType="solid", fgColor="00e5ee")
-    sheet.cell(row=1, column=8).alignment = Alignment(horizontal="center")
-
-    # Calculating Profit
-    row_index = 2
-    for cell in sheet["H"][1:]:
-        cell.value = f"=G{row_index}-F{row_index}"
-        row_index = row_index + 1
-        cell.alignment = Alignment(horizontal="center")
-
-    yellow_background = PatternFill(bgColor="e9ee9e")
-    diff_style = DifferentialStyle(fill=yellow_background)
-    rule = Rule(type="expression", dxf=diff_style)
-    rule.formula = ["$H1<0"]
-    sheet.conditional_formatting.add(f"A1:H{sheet.max_column}", rule)
 
     wb.save("product_list.xlsx")
 

@@ -1,16 +1,24 @@
 import tkinter as tk
 from tkinter import messagebox
-from tkinter.ttk import LabelFrame, Label, Button, Entry, Frame, Scrollbar, Style
+from tkinter.ttk import LabelFrame, Label, Button, Entry, Frame, Scrollbar, Style, Combobox
 import ttkthemes
 from ttkthemes import themed_tk
 from database import Database
-from convertToExcel import convert, calc_profit
+from convertToExcel import convert
 from PIL import Image, ImageTk
 import os
 
 if __name__ == '__main__':
-
     db = Database("products.db")
+
+    def fetch_all_from_db(field):
+        rows = db.fetch_all_rows()
+        return [row[field] for row in rows]
+
+    def populate_name():
+        categories = fetch_all_from_db(1)
+        return categories
+
     def populate_list():
         product_list_listbox.delete(0, tk.END)
         for num, row in enumerate(db.fetch_all_rows()):
@@ -30,12 +38,8 @@ if __name__ == '__main__':
             clear_input()
 
             product_id_entry.insert(0, selected_item[0][1])
-            product_category_entry.insert(0, selected_item[0][2])
-            product_brand_entry.insert(0, selected_item[0][3])
-            product_name_entry.insert(0, selected_item[0][4])
-            product_stock_entry.insert(0,selected_item[0][5])
-            cost_price_entry.insert(0, selected_item[0][6])
-            selling_price_entry.insert(0, selected_item[0][7])
+            product_name_entry.insert(0, selected_item[0][2])
+            product_stock_entry.insert(0,selected_item[0][3])
         except IndexError:
             pass
 
@@ -52,57 +56,28 @@ if __name__ == '__main__':
     root.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     root.columnconfigure(0, weight=1)
 
-    root.wm_iconphoto(True, icon)
-
     entry_frame = LabelFrame(root, text="Entrar com Detalhes do Produto")
+    
     # Product ID
     product_id_var = tk.StringVar()
-    product_id_label = Label(entry_frame, text="ID do produto: ")
+    product_id_label = Label(entry_frame, text="CR do produto: ")
     product_id_label.grid(row=0, column=0, sticky="w", padx=10)
     product_id_entry = Entry(entry_frame, textvariable=product_id_var)
     product_id_entry.grid(row=0, column=1)
 
-    # Product Category
-    product_category_var = tk.StringVar()
-    product_category_label = Label(entry_frame, text="Categoria do produto: ")
-    product_category_label.grid(row=1, column=0, sticky="w", padx=10)
-    product_category_entry = Entry(entry_frame, textvariable= product_category_var)
-    product_category_entry.grid(row=1, column=1)
-
-    # Product Brand
-    product_brand_var = tk.StringVar()
-    product_brand_label = Label(entry_frame, text="Marca do produto: ")
-    product_brand_label.grid(row=0, column=2, sticky="w", padx=10)
-    product_brand_entry = Entry(entry_frame, textvariable=product_brand_var)
-    product_brand_entry.grid(row=0, column=3)
-
     # Product Name
     product_name_var = tk.StringVar()
     product_name_label = Label(entry_frame, text="Nome do Produto: ")
-    product_name_label.grid(row=1, column=2, sticky="w", padx=10)
-    product_name_entry = Entry(entry_frame, textvariable=product_name_var)
-    product_name_entry.grid(row=1, column=3)
+    product_name_label.grid(row=1, column=0, sticky="w", padx=10)
+    product_name_combobox = Combobox(entry_frame, textvariable=product_name_var, state="readonly")
+    product_name_combobox.grid(row=1, column=1)
 
     #Product Stock
     product_stock_var = tk.StringVar()
     product_stock_label = Label(entry_frame, text="Estoque do produto: ")
-    product_stock_label.grid(row=0, column=4, sticky="w", padx=10)
+    product_stock_label.grid(row=0, column=2, sticky="w", padx=10)
     product_stock_entry = Entry(entry_frame, textvariable=product_stock_var)
-    product_stock_entry.grid(row=0, column=5)
-
-    # Cost Price
-    cost_price_var = tk.StringVar()
-    cost_price_label = Label(entry_frame, text="Preço de custo: ")
-    cost_price_label.grid(row=1, column=4, sticky="w", padx=10)
-    cost_price_entry = Entry(entry_frame, textvariable=cost_price_var)
-    cost_price_entry.grid(row=1, column=5)
-
-    # Selling Price
-    selling_price_var = tk.StringVar()
-    selling_price_label = Label(entry_frame, text="Preço de venda: ")
-    selling_price_label.grid(row=2, column=0, sticky="w", padx=10)
-    selling_price_entry = Entry(entry_frame, textvariable=selling_price_var)
-    selling_price_entry.grid(row=2, column=1)
+    product_stock_entry.grid(row=0, column=3)
 
     # Product List
     # frame containing product listing and scrollbar
@@ -133,49 +108,36 @@ if __name__ == '__main__':
     def add_item():
         if (
                 product_id_var.get() == ""
-                or product_category_var.get() == ""
-                or product_brand_var.get() == ""
                 or product_name_var.get() == ""
                 or product_stock_var.get() == ""
-                or cost_price_var.get() == ""
-                or selling_price_var.get() == ""
         ):
             messagebox.showerror(title="Campos obrigatórios", message="Por favor, preencha todos os campos")
             return
 
         db.insert(
             product_id_var.get(),
-            product_category_var.get(),
-            product_brand_var.get(),
             product_name_var.get(),
             product_stock_var.get(),
-            cost_price_var.get(),
-            selling_price_var.get(),
         )
         clear_input()
         populate_list()
         statusbar_label["text"] = "Status: Produto adicionado com sucesso"
+        populate_name()
         statusbar_label.config(bg='green',fg='white')
 
 
     def update_item():
         if(
                 product_id_var.get() != ""
-                and product_category_var.get() != ""
-                and product_brand_var.get() != ""
                 and product_name_var.get() != ""
                 and product_stock_var.get() != ""
-                and cost_price_var.get() != ""
-                and selling_price_var.get() != ""):
+                ):
+                
             db.update(
                 selected_item[0][0],
                 product_id_var.get(),
-                product_category_var.get(),
-                product_brand_var.get(),
                 product_name_var.get(),
                 product_stock_var.get(),
-                cost_price_var.get(),
-                selling_price_var.get(),
             )
             populate_list()
             statusbar_label["text"] = "Status: Produto atualizado com sucesso"
@@ -190,21 +152,17 @@ if __name__ == '__main__':
         clear_input()
         populate_list()
         statusbar_label["text"] = "Status: Produto removido com sucesso"
+        populate_name()
         statusbar_label.config(bg='green', fg='white')
 
     def clear_input():
         product_id_entry.delete(0, tk.END)
-        product_category_entry.delete(0,tk.END)
-        product_brand_entry.delete(0,tk.END)
         product_name_entry.delete(0, tk.END)
         product_stock_entry.delete(0,tk.END)
-        cost_price_entry.delete(0, tk.END)
-        selling_price_entry.delete(0, tk.END)
 
 
     def export_to_excel():
         convert()
-        calc_profit()
         statusbar_label["text"] = f"Status: Arquivo Excel criado em {os.getcwd()}"
         statusbar_label.config(bg='green', fg='white')
 
@@ -239,5 +197,5 @@ if __name__ == '__main__':
     listing_frame.grid_columnconfigure(0, weight=2)
 
     populate_list()
-
+    populate_name()
     root.mainloop()
