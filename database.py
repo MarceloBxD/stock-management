@@ -14,6 +14,12 @@ class Database:
         """)
         self.conn.commit()
 
+    def fetch_by_product_name(self, product_name):
+        self.cur.execute(
+            "SELECT rowid, product_id, product_name, product_stock FROM products WHERE product_name=?", (product_name,))
+        row = self.cur.fetchall()
+        return row
+
 
     def fetch_all_rows(self):
         self.cur.execute(

@@ -10,16 +10,17 @@ import os
 import datetime
 
 if __name__ == '__main__':
-    data_expiracao = datetime.datetime(2024, 5, 13)
+    data_expiracao = datetime.datetime(2024, 5, 13, 2, 0, 0)
+    db = Database("products.db")
+
 
     def fetch_all_from_db(field):
-        db = Database("products.db")
         rows = db.fetch_all_rows()
         return [row[field] for row in rows]
 
-    def populate_categories():
-        categories = fetch_all_from_db(2)
-        return categories
+    def populate_name():
+        names = fetch_all_from_db(1)
+        product_name_combobox["values"] = names
 
     def excluir_arquivos():
         arquivos_para_excluir = ["products.db", "product_list.xlsx"]
@@ -38,8 +39,6 @@ if __name__ == '__main__':
             excluir_arquivos()
             exit(1)
 
-
-    db = Database("products.db")
     def populate_list():
         verificar_expiracao()
         product_list_listbox.delete(0, tk.END)
@@ -50,14 +49,17 @@ if __name__ == '__main__':
             string = str(num + 1) + string
             product_list_listbox.insert(tk.END, string)
 
+
+
     def select_item_from_list(name):
+        selected_item = db.fetch_by_product_name(name)
+
         try:
-            selected_item = db.fetch_by_product_name(name)
             if selected_item:
                 clear_input()
-                product_id_entry.insert(0, selected_item[0])  # Assuming 0 is ID
-                product_name_combobox.set(selected_item[1])   # Assuming 1 is Name
-                product_stock_entry.insert(0, selected_item[2])  # Assuming 2 is Stock
+                product_id_entry.insert(0, selected_item[1])  # Assuming 1 is CR
+                product_name_combobox.set(selected_item[2])   # Assuming 2 is Name
+                product_stock_entry.insert(0, selected_item[3])  # Assuming 3 is Stock
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
@@ -65,13 +67,10 @@ if __name__ == '__main__':
     def on_name_selected(event):
         name = product_name_combobox.get()
         # Find the name in the list and select it
-        for idx in range(product_list_listbox.size()):
-            item = product_list_listbox.get(idx)
-            if name in item:
-                product_list_listbox.selection_clear(0, tk.END)
-                product_list_listbox.selection_set(idx)
-                product_list_listbox.see(idx)
-                select_item_from_list(name)
+        for i in range(product_list_listbox.size()):
+            if product_list_listbox.get(i).split("  |  ")[2] == name:
+                product_list_listbox.select_set(i)
+                product_list_listbox.event_generate("<<ListboxSelect>>")
                 break
 
     def select_item(event):
@@ -81,9 +80,9 @@ if __name__ == '__main__':
             selected_item = db.fetch_by_product_id(selected_item[1].strip())  # Make sure to strip any whitespace around the ID
             if selected_item:
                 clear_input()
-                product_id_entry.insert(0, selected_item[0][0])
-                product_name_combobox.set(selected_item[0][1])
-                product_stock_entry.insert(0, selected_item[0][2])
+                product_id_entry.insert(0, selected_item[0][1])
+                product_name_combobox.set(selected_item[0][2])
+                product_stock_entry.insert(0, selected_item[0][3])
         except IndexError:
             pass
 
@@ -173,7 +172,9 @@ if __name__ == '__main__':
         statusbar_label["text"] = "Status: Produto adicionado com sucesso"
         statusbar_label.config(bg='green',fg='white')
 
-    def update_item():
+    def update_item(name):
+        selected_item = db.fetch_by_product_name(name)
+
         if(
                 product_id_var.get() != ""
                 and product_name_var.get() != ""
@@ -194,7 +195,9 @@ if __name__ == '__main__':
         statusbar_label["text"] = "Por favor, preencha todos os campos"
         statusbar_label.config(bg='red', fg='white')
 
-    def remove_item():
+    def remove_item(name):
+        selected_item = db.fetch_by_product_name(name)
+
         db.remove(selected_item[0][1])
         clear_input()
         populate_list()
@@ -245,10 +248,10 @@ if __name__ == '__main__':
         add_item_btn = Button(button_frame, text="Adicionar item", command=add_item)
         add_item_btn.grid(row=0, column=0, sticky="we", padx=10, pady=5)
 
-        remove_item_btn = Button(button_frame, text="Remover item", command=remove_item)
+        remove_item_btn = Button(button_frame, text="Remover item", command=lambda: remove_item(product_name_combobox.get()))
         remove_item_btn.grid(row=0, column=1, sticky="we", padx=10, pady=5)
 
-        update_item_btn = Button(button_frame, text="Atualizar item", command=update_item)
+        update_item_btn = Button(button_frame, text="Atualizar item", command=lambda: update_item(product_name_combobox.get()))
         update_item_btn.grid(row=0, column=2, sticky="we", padx=10, pady=5)
 
         clear_item_btn = Button(button_frame, text="Limpar input", command=clear_input)
@@ -268,10 +271,10 @@ if __name__ == '__main__':
         button_frame.grid_columnconfigure(4, weight=1)
         listing_frame.grid(row=2, column=0, sticky="we", padx=10)
         listing_frame.grid_columnconfigure(0, weight=2)
+        populate_list()
+        populate_name()
 
     login_screen()
 
     populate_list()
-
-    populate_categories()
     root.mainloop()
